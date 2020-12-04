@@ -6,17 +6,17 @@ declare(strict_types=1);
 namespace CarlosChininin\Data\Export;
 
 
-use CarlosChininin\Util\File\FileDto;
-
 abstract class Export
 {
     protected $items;
     protected $headers;
+    protected $options;
 
-    public function __construct(array $items, array $headers = [])
+    public function __construct(array $items, array $headers = [], array $options = [])
     {
         $this->items = $items;
         $this->headers = $headers;
+        $this->options = $options;
     }
 
     public function items(): array
@@ -29,5 +29,10 @@ abstract class Export
         return $this->headers;
     }
 
-    abstract public function execute(): FileDto;
+    public function options(): array
+    {
+        return $this->options;
+    }
+
+    abstract public function execute(): self;
 }
