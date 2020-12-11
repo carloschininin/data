@@ -1,7 +1,8 @@
 {
   "name": "carloschininin/data",
   "description": "Utilities for data",
-  "license": "proprietary",
+  "version": "0.0.3",
+  "license": "library",
   "authors": [
     {
       "name": "Carlos Chininin",

@@ -6,6 +6,8 @@ declare(strict_types=1);
 namespace CarlosChininin\Data\Export;
 
 
+use CarlosChininin\Util\File\FileDto;
+
 abstract class Export
 {
     protected $items;
@@ -35,4 +37,5 @@ abstract class Export
     }
 
     abstract public function execute(): self;
+    abstract public function file(string $fileName, array $params = []): FileDto;
 }
