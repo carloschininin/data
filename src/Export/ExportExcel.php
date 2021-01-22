@@ -2,16 +2,78 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the PIDIA
+ * (c) Carlos Chininin <cio@pidia.pe>
+ */
 
 namespace CarlosChininin\Data\Export;
 
-
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 final class ExportExcel extends ExportData
 {
-    public function __construct(array $items, array $headers = [], array $options = [])
+    public function __construct(array $items = [], array $headers = [], array $options = [])
     {
         $options = array_merge($options, ['type' => self::EXCEL]);
         parent::__construct($items, $headers, $options);
+    }
+
+    public function headerStyle(array $style = [], ?string $range = null): self
+    {
+        $range = $range ?? $this->range();
+
+        $defaultStyle = [
+            'font' => [
+                'bold' => true,
+                'size' => '11',
+                'color' => [
+                    'rgb' => 'FFFFFF',
+                ],
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+                'wrapText' => true, // auto adjusted
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THICK,
+                    'color' => [
+                        'argb' => 'A0000000',
+                    ],
+                ],
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => [
+                    'rgb' => '215967', //'A9D08E',
+                ],
+            ],
+        ];
+
+        $style = array_merge($defaultStyle, $style);
+
+        $this->sheet()
+            ->getStyle($range)
+            ->applyFromArray($style);
+
+//        $this->sheet()->setAutoFilter($range);
+
+        return $this;
+    }
+
+    public function columnAutoSize(string $start = null, string $end = null): self
+    {
+        $columnStart = $start ? \ord($start) : \ord($this->col);
+        $columnEnd = $end ? \ord($end) : (\count($this->headers) + $columnStart + 1);
+
+        for ($i = $columnStart; $i <= $columnEnd; ++$i) {
+            $this->sheet()->getColumnDimension(\chr($i))->setAutoSize(true);
+        }
+
+        return $this;
     }
 }

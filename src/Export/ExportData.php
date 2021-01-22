@@ -2,13 +2,17 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the PIDIA
+ * (c) Carlos Chininin <cio@pidia.pe>
+ */
 
 namespace CarlosChininin\Data\Export;
-
 
 use CarlosChininin\Util\File\FileDto;
 use DateTime;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\BaseWriter;
 use PhpOffice\PhpSpreadsheet\Writer\Csv;
@@ -21,46 +25,96 @@ class ExportData extends Export
     public const EXCEL_OLD = 'XLS';
     public const CSV = 'CSV';
 
-    private $spreadsheet;
-    private $col;
-    private $row;
-    private $type;
+    private Spreadsheet $spreadsheet;
+    protected string $col;
+    protected int $row;
+    private string $type;
 
-    public function __construct(array $items, array $headers = [], array $options = [])
+    public function __construct(array $items = [], array $headers = [], array $options = [])
     {
         parent::__construct($items, $headers, $options);
         $this->spreadsheet = new Spreadsheet();
         $this->valuesOfOptions();
     }
 
-    private function sheet(): Worksheet
+    protected function sheet(): Worksheet
     {
         return $this->spreadsheet->getActiveSheet();
     }
 
     public function execute(): Export
     {
-        //establecer las cabeceras
-        $column = ord($this->col) - 1;
+        $this->applyHeaders();
+        $this->applyItems();
+
+        return $this;
+    }
+
+    public function applyHeaders(): self
+    {
+        // Establecer las cabeceras
+        $column = \ord($this->col) - 1;
         foreach ($this->headers as $key => $label) {
             ++$column;
-            $this->sheet()->setCellValue(chr($column).$this->row, $label);
+            $this->setCellValue(\chr($column).$this->row, $label);
         }
 
+        return $this;
+    }
+
+    public function applyItems(): self
+    {
+        // Colocar los datos
         $i = $this->row + 1;
         foreach ($this->items as $item) {
-            $column = ord($this->col) - 1;
+            $column = \ord($this->col) - 1;
             foreach ($this->headers as $key => $label) {
                 ++$column;
-                $this->sheet()->setCellValue(chr($column).$i,$this->itemByKey($item, $key) );
+                $this->setCellValue(\chr($column).$i, $this->itemByKey($item, $key));
             }
             ++$i;
         }
 
-//        $this->headerSheet($this->start, \chr($column), $this->row);
-//        $this->dataStyle($this->start, \chr($column), $this->row);
+        return $this;
+    }
+
+    public function setCellValue(string $position, $value, string $dataType = null): self
+    {
+        if (null === $dataType) {
+            $this->sheet()->setCellValue($position, $value);
+        } else {
+            $this->sheet()->setCellValueExplicit($position, $value, $dataType);
+        }
 
         return $this;
+    }
+
+    public function setCellValueAndMerge(string $range, $value): self
+    {
+        list($ini, $fin) = explode(':', $range);
+
+        return $this->mergeCell($range)->setCellValue($ini, $value);
+    }
+
+    public function setCellFromArray(string $startCell, array $items, $nullValue = null): self
+    {
+        $this->sheet()->fromArray($items, $nullValue, $startCell);
+
+        return $this;
+    }
+
+    public function mergeCell(string $range): self
+    {
+        $this->sheet()->mergeCells($range);
+
+        return $this;
+    }
+
+    public function range(): string
+    {
+        $end = \count($this->headers) + \ord($this->col) - 1;
+
+        return $this->col.$this->row.':'.\chr($end).$this->row;
     }
 
     private function itemByKey(array $item, string $key)
@@ -73,8 +127,12 @@ class ExportData extends Export
     private function item($item, array $indexes, int $count)
     {
         $key = $indexes[$count];
-        if (is_array($item[$key])) {
-            return $this->item($item[$key], $indexes, $count+1);
+        if (!isset($item[$key])) {
+            return null;
+        }
+
+        if (\is_array($item[$key])) {
+            return $this->item($item[$key], $indexes, $count + 1);
         }
 
         return $item[$key];
@@ -96,7 +154,7 @@ class ExportData extends Export
             return $fileName.$this->fileExtension();
         }
 
-        if (isset($params['date']) && true === $params['date'] ) {
+        if (isset($params['date']) && true === $params['date']) {
             return $fileName.'_'.(new DateTime())->format('dmY').$this->fileExtension();
         }
 
@@ -117,7 +175,7 @@ class ExportData extends Export
 
     protected function fileExtension(): string
     {
-        return '.'.strtolower($this->type);
+        return '.'.mb_strtolower($this->type);
     }
 
     protected function fileWriter(): BaseWriter
@@ -135,5 +193,15 @@ class ExportData extends Export
         }
 
         return new Xlsx($this->spreadsheet);
+    }
+
+    public function styleColDate(string $range): void
+    {
+        $this->sheet()->getStyle($range)->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+    }
+
+    public function styleColTime(string $range): void
+    {
+        $this->sheet()->getStyle($range)->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_TIME3);
     }
 }

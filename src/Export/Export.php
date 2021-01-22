@@ -2,17 +2,20 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the PIDIA
+ * (c) Carlos Chininin <cio@pidia.pe>
+ */
 
 namespace CarlosChininin\Data\Export;
-
 
 use CarlosChininin\Util\File\FileDto;
 
 abstract class Export
 {
-    protected $items;
-    protected $headers;
-    protected $options;
+    protected array $items;
+    protected array $headers;
+    protected array $options;
 
     public function __construct(array $items, array $headers = [], array $options = [])
     {
@@ -37,5 +40,6 @@ abstract class Export
     }
 
     abstract public function execute(): self;
+
     abstract public function file(string $fileName, array $params = []): FileDto;
 }
