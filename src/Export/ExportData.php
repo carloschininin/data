@@ -52,7 +52,7 @@ class ExportData extends Export
         return $this->spreadsheet->getActiveSheet();
     }
 
-    public function execute(): Export
+    public function execute(): self
     {
         $this->applyHeaders();
         $this->applyItems();

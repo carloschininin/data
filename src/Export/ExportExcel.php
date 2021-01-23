@@ -76,4 +76,18 @@ final class ExportExcel extends ExportData
 
         return $this;
     }
+
+    public function pageSetup(array $options = []): self
+    {
+        $setup = $this->sheet()->getPageSetup();
+
+        if (isset($options['FitToWidth'])) {
+            $setup->setFitToWidth((int) $options['FitToWidth']);
+        }
+        if (isset($options['FitToHeight'])) {
+            $setup->setFitToHeight((int) $options['FitToHeight']);
+        }
+
+        return $this;
+    }
 }
