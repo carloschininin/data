@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "26aa2b19652d9aace7bd35e56eaca149",
+    "content-hash": "eab3dada67e90e00eccd08819b0eed86",
     "packages": [
         {
             "name": "carloschininin/util",
@@ -52,7 +52,7 @@
             "description": "Utilities",
             "support": {
                 "issues": "https://github.com/carloschininin/util/issues",
-                "source": "https://github.com/carloschininin/util/tree/master"
+                "source": "https://github.com/carloschininin/util/tree/v0.0.2"
             },
             "time": "2021-01-22T21:42:45+00:00"
         },
@@ -5720,7 +5720,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "carloschininin/util": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

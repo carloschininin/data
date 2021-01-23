@@ -1,7 +1,6 @@
 {
   "name": "carloschininin/data",
   "description": "Utilities for data",
-  "version": "0.0.3",
   "license": "proprietary",
   "authors": [
     {
@@ -11,7 +10,7 @@
   ],
   "require": {
     "php": "^7.4|^8.0",
-    "carloschininin/util": "*",
+    "carloschininin/util": "dev-master",
     "phpoffice/phpspreadsheet": "^1.15",
     "symfony/http-foundation": "^5.2"
   },
