@@ -102,6 +102,16 @@ final class ExportExcel extends ExportData
         if (isset($options['orientation'])) {
             $setup->setOrientation($options['orientation']); //default landscape portrait
         }
+        if (isset($options['paperSize'])) {
+            switch (mb_strtoupper($options['paperSize'])) {
+                case 'A4': $paperSize = PageSetup::PAPERSIZE_A4; break;
+                case 'A3': $paperSize = PageSetup::PAPERSIZE_A3; break;
+                case 'A2': $paperSize = PageSetup::PAPERSIZE_A2_PAPER; break;
+                case 'A5': $paperSize = PageSetup::PAPERSIZE_A5; break;
+                default: $paperSize = PageSetup::PAPERSIZE_A4;
+            }
+            $setup->setPaperSize($paperSize); //default landscape portrait
+        }
 
         return $this;
     }
