@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace CarlosChininin\Data\Export;
 
+use CarlosChininin\Util\File\FileDownload;
 use CarlosChininin\Util\File\FileDto;
 use DateTime;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -16,14 +17,22 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\BaseWriter;
 use PhpOffice\PhpSpreadsheet\Writer\Csv;
+use PhpOffice\PhpSpreadsheet\Writer\Pdf\Dompdf;
+use PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf;
+use PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\Response;
 
 class ExportData extends Export
 {
     public const EXCEL = 'XLSX';
     public const EXCEL_OLD = 'XLS';
     public const CSV = 'CSV';
+
+    public const PDF_DOMPDF = 'DOMPDF';
+    public const PDF_MPDF = 'MPDF';
+    public const PDF_TCPDF = 'TCPDF';
 
     private Spreadsheet $spreadsheet;
     protected string $col;
@@ -138,6 +147,16 @@ class ExportData extends Export
         return $item[$key];
     }
 
+    public function styleColDate(string $range): void
+    {
+        $this->sheet()->getStyle($range)->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+    }
+
+    public function styleColTime(string $range): void
+    {
+        $this->sheet()->getStyle($range)->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_TIME3);
+    }
+
     public function file(string $fileName, array $params = []): FileDto
     {
         $writer = $this->fileWriter();
@@ -146,6 +165,13 @@ class ExportData extends Export
         $writer->save($filePath);
 
         return new FileDto($fileName, $filePath);
+    }
+
+    public function download(string $fileName, array $params = []): Response
+    {
+        $file = $this->file($fileName, $params);
+
+        return (new FileDownload())->down($file);
     }
 
     protected function encodeName(string $fileName, array $params): string
@@ -175,33 +201,40 @@ class ExportData extends Export
 
     protected function fileExtension(): string
     {
+        if (\in_array($this->type, [self::PDF_DOMPDF, self::PDF_MPDF, self::PDF_TCPDF], true)) {
+            return '.pdf';
+        }
+
         return '.'.mb_strtolower($this->type);
     }
 
-    protected function fileWriter(): BaseWriter
+    protected function fileWriter(string $type = null): BaseWriter
     {
-        if (self::EXCEL === $this->type) {
+        $type = $type ?? $this->type;
+        if (self::EXCEL === $type) {
             return new Xlsx($this->spreadsheet);
         }
 
-        if (self::EXCEL_OLD === $this->type) {
+        if (self::EXCEL_OLD === $type) {
             return new Xls($this->spreadsheet);
         }
 
-        if (self::CSV === $this->type) {
+        if (self::CSV === $type) {
             return new Csv($this->spreadsheet);
         }
 
+        if (self::PDF_DOMPDF === $type) {
+            return new Dompdf($this->spreadsheet);
+        }
+
+        if (self::PDF_MPDF === $type) {
+            return new Mpdf($this->spreadsheet);
+        }
+
+        if (self::PDF_TCPDF === $type) {
+            return new Tcpdf($this->spreadsheet);
+        }
+
         return new Xlsx($this->spreadsheet);
-    }
-
-    public function styleColDate(string $range): void
-    {
-        $this->sheet()->getStyle($range)->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
-    }
-
-    public function styleColTime(string $range): void
-    {
-        $this->sheet()->getStyle($range)->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_TIME3);
     }
 }

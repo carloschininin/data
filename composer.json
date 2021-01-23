@@ -19,6 +19,12 @@
     "fzaninotto/faker": "^1.9",
     "phpunit/phpunit": "^9.5"
   },
+  "suggest": {
+    "mpdf/mpdf": "Option for rendering PDF with PDF Writer",
+    "dompdf/dompdf": "Option for rendering PDF with PDF Writer (doesn't yet support PHP8)",
+    "tecnickcom/tcpdf": "Option for rendering PDF with PDF Writer (doesn't yet support PHP8)",
+    "jpgraph/jpgraph": "Option for rendering charts, or including charts with PDF or HTML Writers"
+  },
   "config": {
     "optimize-autoloader": true,
     "sort-packages": true
