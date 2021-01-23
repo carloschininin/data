@@ -12,6 +12,7 @@ namespace CarlosChininin\Data\Export;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 
 final class ExportExcel extends ExportData
 {
@@ -81,11 +82,14 @@ final class ExportExcel extends ExportData
     {
         $setup = $this->sheet()->getPageSetup();
 
-        if (isset($options['FitToWidth'])) {
+        if (isset($options['FitToWidth'])) { //1 0
             $setup->setFitToWidth((int) $options['FitToWidth']);
         }
-        if (isset($options['FitToHeight'])) {
+        if (isset($options['FitToHeight'])) { // 1 0
             $setup->setFitToHeight((int) $options['FitToHeight']);
+        }
+        if (isset($options['orientation'])) {
+            $setup->setOrientation($options['orientation']); //default landscape portrait
         }
 
         return $this;
