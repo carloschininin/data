@@ -90,14 +90,14 @@ final class ExportExcel extends ExportData
                 throw new ExportException('Escala de pagina');
             }
         }
-        if (isset($options['FitToPage'])) { //true false
-            $setup->setFitToPage((bool) $options['FitToPage']);
+        if (isset($options['fitToPage'])) { //true false
+            $setup->setFitToPage((bool) $options['fitToPage']);
         }
-        if (isset($options['FitToWidth'])) { //1 0
-            $setup->setFitToWidth((int) $options['FitToWidth']);
+        if (isset($options['fitToWidth'])) { //1 0
+            $setup->setFitToWidth((int) $options['fitToWidth']);
         }
-        if (isset($options['FitToHeight'])) { // 1 0
-            $setup->setFitToHeight((int) $options['FitToHeight']);
+        if (isset($options['fitToHeight'])) { // 1 0
+            $setup->setFitToHeight((int) $options['fitToHeight']);
         }
         if (isset($options['orientation'])) {
             $setup->setOrientation($options['orientation']); //default landscape portrait
