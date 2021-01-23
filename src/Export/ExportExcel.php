@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace CarlosChininin\Data\Export;
 
+use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
@@ -82,6 +83,13 @@ final class ExportExcel extends ExportData
     {
         $setup = $this->sheet()->getPageSetup();
 
+        if (isset($options['scale'])) { // 10 - 400
+            try {
+                $setup->setScale($options['scale']);
+            } catch (Exception $e) {
+                throw new ExportException('Escala de pagina');
+            }
+        }
         if (isset($options['FitToWidth'])) { //1 0
             $setup->setFitToWidth((int) $options['FitToWidth']);
         }
