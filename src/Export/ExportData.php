@@ -12,6 +12,7 @@ namespace CarlosChininin\Data\Export;
 use CarlosChininin\Util\File\FileDownload;
 use CarlosChininin\Util\File\FileDto;
 use DateTime;
+use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -114,7 +115,11 @@ class ExportData extends Export
 
     public function mergeCell(string $range): self
     {
-        $this->sheet()->mergeCells($range);
+        try {
+            $this->sheet()->mergeCells($range);
+        } catch (Exception $e) {
+            throw new ExportException('Fallo union de celdas');
+        }
 
         return $this;
     }
