@@ -90,6 +90,9 @@ final class ExportExcel extends ExportData
                 throw new ExportException('Escala de pagina');
             }
         }
+        if (isset($options['FitToPage'])) { //true false
+            $setup->setFitToPage((bool) $options['FitToPage']);
+        }
         if (isset($options['FitToWidth'])) { //1 0
             $setup->setFitToWidth((int) $options['FitToWidth']);
         }
