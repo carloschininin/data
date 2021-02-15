@@ -66,7 +66,7 @@ class ExportData extends Export
         $column = \ord($this->col) - 1;
         foreach ($this->headers as $key => $label) {
             ++$column;
-            $this->setCellValue(\chr($column).$this->row, $label);
+            $this->setCellValue(\chr($column).$this->row, $this->labelHeader($label));
         }
 
         return $this;
@@ -86,6 +86,16 @@ class ExportData extends Export
         }
 
         return $this;
+    }
+
+    /** @param string | array $value */
+    protected function labelHeader($value): string
+    {
+        if (\is_string($value)) {
+            return $value;
+        }
+
+        return $value['label'] ?? '';
     }
 
     public function setCellValue(string $position, $value, string $dataType = null): self
