@@ -12,7 +12,9 @@ namespace CarlosChininin\Data\Export;
 use CarlosChininin\Util\File\FileDownload;
 use CarlosChininin\Util\File\FileDto;
 use DateTime;
+use DateTimeInterface;
 use PhpOffice\PhpSpreadsheet\Exception;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -113,14 +115,17 @@ class ExportData extends Export
 
     public function setCellValue(string $position, $value, string $dataType = null, string $dataFormat = null): self
     {
+        if (null !== $dataFormat) {
+            $this->sheet()->setCellValue($position, Date::PHPToExcel($value));
+            $this->sheet()->getStyle($position)->getNumberFormat()->setFormatCode($dataFormat);
+
+            return $this;
+        }
+
         if (null === $dataType) {
             $this->sheet()->setCellValue($position, $value);
         } else {
             $this->sheet()->setCellValueExplicit($position, $value, $dataType);
-        }
-
-        if (null !== $dataFormat) {
-            $this->sheet()->getStyle($position)->getNumberFormat()->setFormatCode($dataFormat);
         }
 
         return $this;
