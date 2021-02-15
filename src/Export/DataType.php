@@ -10,6 +10,10 @@ use PhpOffice\PhpSpreadsheet\Cell\DataType as PhpDataType;
 interface DataType
 {
     public const STRING = PhpDataType::TYPE_STRING;
+    public const STRING2 = PhpDataType::TYPE_STRING2;
     public const NUMBER = PhpDataType::TYPE_NUMERIC;
     public const BOOL = PhpDataType::TYPE_BOOL;
+    public const FORMULA = PhpDataType::TYPE_FORMULA;
+    public const INLINE = PhpDataType::TYPE_INLINE;
+    public const NULL = PhpDataType::TYPE_NULL;
 }

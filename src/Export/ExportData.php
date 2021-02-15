@@ -80,7 +80,7 @@ class ExportData extends Export
             $column = \ord($this->col) - 1;
             foreach ($this->headers as $key => $label) {
                 ++$column;
-                $this->setCellValue(\chr($column).$i, $this->itemByKey($item, $key));
+                $this->setCellValue(\chr($column).$i, $this->itemByKey($item, $key), $this->typeHeader($label));
             }
             ++$i;
         }
@@ -91,11 +91,13 @@ class ExportData extends Export
     /** @param string | array $value */
     protected function labelHeader($value): string
     {
-        if (\is_string($value)) {
-            return $value;
-        }
+        return $value['label'] ?? $value;
+    }
 
-        return $value['label'] ?? '';
+    /** @param string | array $value */
+    protected function typeHeader($value): ?string
+    {
+        return $value['type'] ?? null;
     }
 
     public function setCellValue(string $position, $value, string $dataType = null): self
