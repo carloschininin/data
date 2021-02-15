@@ -80,7 +80,12 @@ class ExportData extends Export
             $column = \ord($this->col) - 1;
             foreach ($this->headers as $key => $label) {
                 ++$column;
-                $this->setCellValue(\chr($column).$i, $this->itemByKey($item, $key), $this->typeHeader($label));
+                $this->setCellValue(
+                    \chr($column).$i,
+                    $this->itemByKey($item, $key),
+                    $this->typeHeader($label),
+                    $this->formatHeader($label)
+                );
             }
             ++$i;
         }
@@ -100,12 +105,22 @@ class ExportData extends Export
         return $value['type'] ?? null;
     }
 
-    public function setCellValue(string $position, $value, string $dataType = null): self
+    /** @param string | array $value */
+    protected function formatHeader($value): ?string
+    {
+        return $value['format'] ?? null;
+    }
+
+    public function setCellValue(string $position, $value, string $dataType = null, string $dataFormat = null): self
     {
         if (null === $dataType) {
             $this->sheet()->setCellValue($position, $value);
         } else {
             $this->sheet()->setCellValueExplicit($position, $value, $dataType);
+        }
+
+        if (null !== $dataFormat) {
+            $this->sheet()->getStyle($position)->getNumberFormat()->setFormatCode($dataFormat);
         }
 
         return $this;
