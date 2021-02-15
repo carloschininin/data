@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the PIDIA
+ * (c) Carlos Chininin <cio@pidia.pe>
+ */
 
 namespace CarlosChininin\Data\Export;
 
@@ -15,4 +19,5 @@ interface DataType
     public const FORMULA = PhpDataType::TYPE_FORMULA;
     public const INLINE = PhpDataType::TYPE_INLINE;
     public const NULL = PhpDataType::TYPE_NULL;
+    public const DATE = 'dat';
 }
