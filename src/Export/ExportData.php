@@ -112,9 +112,13 @@ class ExportData extends Export
         return $value['format'] ?? null;
     }
 
-    public function setCellValue(string $position, $value, string $dataType = null, string $dataFormat = null): self
+    public function setCellValue(string $position, $value, string $dataType = null, ?string $dataFormat = null): self
     {
-        $value = (DataType::DATE === $dataType) ? Date::PHPToExcel($value) : $value;
+        if (DataType::DATE === $dataType) {
+            $value = Date::PHPToExcel($value);
+            $dataFormat = $dataFormat ?? DataFormat::DATE_DDMMYYYY;
+        }
+
         if (null === $dataType || DataType::DATE === $dataType) {
             $this->sheet()->setCellValue($position, $value);
         } else {
