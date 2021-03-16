@@ -23,9 +23,9 @@ interface DataFormat
     const PERCENTAGE = '0%';
     const PERCENTAGE_00 = '0.00%';
 
-    const DATE_YYYYMMDD2 = 'yyyy-mm-dd';
     const DATE_YYYYMMDD = 'yyyy-mm-dd';
     const DATE_DDMMYYYY = 'dd/mm/yyyy';
+    const DATE_DDMMYYYY2 = 'dd-mm-yyyy';
     const DATE_DMYSLASH = 'd/m/yy';
     const DATE_DMYMINUS = 'd-m-yy';
     const DATE_DMMINUS = 'd-m';
