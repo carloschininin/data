@@ -115,4 +115,46 @@ final class ExportExcel extends ExportData
 
         return $this;
     }
+
+    public function styleBorder(array $style = [], ?string $range = null): self
+    {
+        $range = $range ?? $this->range();
+
+        $defaultStyle = [
+            'allBorders' => [
+                'borderStyle' => Border::BORDER_THICK,
+                'color' => [
+                    'argb' => 'A0000000',
+                ],
+            ],
+        ];
+
+        if (empty($style)) {
+            $style = $defaultStyle;
+        }
+
+        $this->sheet()->getStyle($range)->getBorders()->applyFromArray($style);
+
+        return $this;
+    }
+
+    public function styleFont(array $style = [], ?string $range = null): self
+    {
+        $range = $range ?? $this->range();
+
+        $defaultStyle = [
+            'size' => '11',
+            'color' => [
+                'rgb' => '000000',
+            ],
+        ];
+
+        if (empty($style)) {
+            $style = $defaultStyle;
+        }
+
+        $this->sheet()->getStyle($range)->getFont()->applyFromArray($style);
+
+        return $this;
+    }
 }
