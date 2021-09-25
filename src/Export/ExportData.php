@@ -41,15 +41,48 @@ class ExportData extends Export
     protected int $row;
     private string $type;
 
-    public function __construct(array $items = [], array $headers = [], array $options = [])
+    public function __construct(array $items = [], array $headers = [], array $options = [], bool $removeWorksheet = false)
     {
         parent::__construct($items, $headers, $options);
         $this->spreadsheet = new Spreadsheet();
+        if ($removeWorksheet) {
+            $this->removeSheet(0);
+        }
         $this->valuesOfOptions();
     }
 
-    protected function sheet(): Worksheet
+    public function removeSheet(int $index = 0): bool
     {
+        try {
+            $this->spreadsheet->removeSheetByIndex($index);
+            return true;
+        } catch (Exception $e) {
+        }
+
+        return false;
+    }
+
+    public function addSheet(string $title): ?Worksheet
+    {
+        try {
+            return $this->spreadsheet->addSheet(new Worksheet($this->spreadsheet, $title));
+        } catch (Exception $e) {
+        }
+
+        return null;
+    }
+
+    public function sheet(?int $index = null): Worksheet
+    {
+        if (null === $index || $index < 0) {
+            return $this->spreadsheet->getActiveSheet();
+        }
+
+        try {
+            return $this->spreadsheet->getSheet($index);
+        } catch (Exception $e) {
+        }
+
         return $this->spreadsheet->getActiveSheet();
     }
 
@@ -94,19 +127,19 @@ class ExportData extends Export
         return $this;
     }
 
-    /** @param string | array $value */
+    /** @param string|array $value */
     protected function labelHeader($value): string
     {
         return $value['label'] ?? $value;
     }
 
-    /** @param string | array $value */
+    /** @param string|array $value */
     protected function typeHeader($value): ?string
     {
         return $value['type'] ?? null;
     }
 
-    /** @param string | array $value */
+    /** @param string|array $value */
     protected function formatHeader($value): ?string
     {
         return $value['format'] ?? null;
@@ -232,9 +265,9 @@ class ExportData extends Export
     protected function valuesOfOptions(): void
     {
         $options = $this->options();
-        $this->col = isset($options['col']) ? $options['col'] : 'A';
-        $this->row = isset($options['row']) ? $options['row'] : 1;
-        $this->type = isset($options['type']) ? $options['type'] : self::EXCEL;
+        $this->col = $options['col'] ?? 'A';
+        $this->row = $options['row'] ?? 1;
+        $this->type = $options['type'] ?? self::EXCEL;
     }
 
     protected function fileExtension(): string

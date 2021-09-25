@@ -17,10 +17,10 @@ use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 
 final class ExportExcel extends ExportData
 {
-    public function __construct(array $items = [], array $headers = [], array $options = [])
+    public function __construct(array $items = [], array $headers = [], array $options = [], bool $removeWorksheet = false)
     {
         $options = array_merge(['type' => self::EXCEL], $options);
-        parent::__construct($items, $headers, $options);
+        parent::__construct($items, $headers, $options, $removeWorksheet);
     }
 
     public function headerStyle(array $style = [], ?string $range = null): self
