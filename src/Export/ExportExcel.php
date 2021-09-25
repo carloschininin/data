@@ -58,11 +58,7 @@ final class ExportExcel extends ExportData
 
         $style = array_merge($defaultStyle, $style);
 
-        $this->sheet()
-            ->getStyle($range)
-            ->applyFromArray($style);
-
-//        $this->sheet()->setAutoFilter($range);
+        $this->style($style, $range);
 
         return $this;
     }
@@ -116,13 +112,13 @@ final class ExportExcel extends ExportData
         return $this;
     }
 
-    public function styleBorder(array $style = [], ?string $range = null): self
+    public function borderStyle(array $style = [], ?string $range = null): self
     {
         $range = $range ?? $this->range();
 
         $defaultStyle = [
             'allBorders' => [
-                'borderStyle' => Border::BORDER_THICK,
+                'borderStyle' => Border::BORDER_THIN,
                 'color' => [
                     'argb' => 'A0000000',
                 ],
@@ -138,7 +134,7 @@ final class ExportExcel extends ExportData
         return $this;
     }
 
-    public function styleFont(array $style = [], ?string $range = null): self
+    public function fontStyle(array $style = [], ?string $range = null): self
     {
         $range = $range ?? $this->range();
 
@@ -154,6 +150,24 @@ final class ExportExcel extends ExportData
         }
 
         $this->sheet()->getStyle($range)->getFont()->applyFromArray($style);
+
+        return $this;
+    }
+
+    public function style(array $style, string $range): self
+    {
+        $this->sheet()->getStyle($range)->applyFromArray($style);
+
+        return $this;
+    }
+
+    public function setCellValueAndMerge(string $range, $value, array $style = []): self
+    {
+        parent::setCellValueAndMerge($range, $value);
+
+        if (!empty($style)) {
+            $this->style($style, $range);
+        }
 
         return $this;
     }
