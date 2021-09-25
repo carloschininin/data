@@ -46,7 +46,7 @@ class ExportData extends Export
         parent::__construct($items, $headers, $options);
         $this->spreadsheet = new Spreadsheet();
         if ($removeWorksheet) {
-            $this->removeSheet(0);
+            $this->removeSheet();
         }
         $this->valuesOfOptions();
     }
@@ -65,7 +65,18 @@ class ExportData extends Export
     public function addSheet(string $title): ?Worksheet
     {
         try {
-            return $this->spreadsheet->addSheet(new Worksheet($this->spreadsheet, $title));
+            $this->spreadsheet->addSheet(new Worksheet($this->spreadsheet, $title));
+            return $this->spreadsheet->setActiveSheetIndexByName($title);
+        } catch (Exception $e) {
+        }
+
+        return null;
+    }
+
+    public function setActiveSheet(int $index): ?Worksheet
+    {
+        try {
+            return $this->spreadsheet->setActiveSheetIndex($index);
         } catch (Exception $e) {
         }
 
