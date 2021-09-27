@@ -176,6 +176,13 @@ class ExportData extends Export
         return $this;
     }
 
+    public function setCellFormat(string $position, string $dataFormat): self
+    {
+        $this->sheet()->getStyle($position)->getNumberFormat()->setFormatCode($dataFormat);
+
+        return $this;
+    }
+
     public function setCellValueAndMerge(string $range, $value): self
     {
         list($ini, $fin) = explode(':', $range);
