@@ -228,8 +228,10 @@ class ExportData extends Export
     public function range(): string
     {
         $end = \count($this->headers) + \ord($this->col) - 1;
+        $startColumn = $this->columnLabel(\ord($this->col));
+        $endColumn = $this->columnLabel($end);
 
-        return $this->col.$this->row.':'.\chr($end).$this->row;
+        return $startColumn.$this->row.':'.$endColumn.$this->row;
     }
 
     private function itemByKey(array $item, string $key)

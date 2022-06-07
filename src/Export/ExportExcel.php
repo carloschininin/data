@@ -69,7 +69,8 @@ final class ExportExcel extends ExportData
         $columnEnd = $end ? \ord($end) : (\count($this->headers) + $columnStart + 1);
 
         for ($i = $columnStart; $i <= $columnEnd; ++$i) {
-            $this->sheet()->getColumnDimension(\chr($i))->setAutoSize(true);
+            $column = $this->columnLabel($i);
+            $this->sheet()->getColumnDimension($column)->setAutoSize(true);
         }
 
         return $this;
