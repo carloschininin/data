@@ -55,6 +55,7 @@ class ExportData extends Export
     {
         try {
             $this->spreadsheet->removeSheetByIndex($index);
+
             return true;
         } catch (Exception $e) {
         }
@@ -66,6 +67,7 @@ class ExportData extends Export
     {
         try {
             $this->spreadsheet->addSheet(new Worksheet($this->spreadsheet, $title));
+
             return $this->spreadsheet->setActiveSheetIndexByName($title);
         } catch (Exception $e) {
         }
@@ -111,7 +113,8 @@ class ExportData extends Export
         $column = \ord($this->col) - 1;
         foreach ($this->headers as $key => $label) {
             ++$column;
-            $this->setCellValue(\chr($column).$this->row, $this->labelHeader($label));
+            $position = $this->columnLabel($column).$this->row;
+            $this->setCellValue($position, $this->labelHeader($label));
         }
 
         return $this;
@@ -125,8 +128,9 @@ class ExportData extends Export
             $column = \ord($this->col) - 1;
             foreach ($this->headers as $key => $label) {
                 ++$column;
+                $position = $this->columnLabel($column).$i;
                 $this->setCellValue(
-                    \chr($column).$i,
+                    $position, // \chr($column).$i,
                     $this->itemByKey($item, $key),
                     $this->typeHeader($label),
                     $this->formatHeader($label)
@@ -136,6 +140,19 @@ class ExportData extends Export
         }
 
         return $this;
+    }
+
+    public function columnLabel(int $column): string
+    {
+        if ($column <= \ord('Z')) {
+            return \chr($column);
+        }
+
+        $factor = floor(($column - \ord('A')) / 26);
+        $base = $factor - 1 + \ord('A');
+        $next = $column - 26 * $factor;
+
+        return $this->columnLabel($base).$this->columnLabel($next);
     }
 
     /** @param string|array $value */
