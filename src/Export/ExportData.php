@@ -152,7 +152,7 @@ class ExportData extends Export
         $base = $factor - 1 + \ord('A');
         $next = $column - 26 * $factor;
 
-        return $this->columnLabel($base).$this->columnLabel($next);
+        return $this->columnLabel((int) $base).$this->columnLabel((int) $next);
     }
 
     /** @param string|array $value */
