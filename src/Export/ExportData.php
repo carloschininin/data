@@ -245,9 +245,9 @@ class ExportData extends Export
     {
         $key = $indexes[$count];
         if (!isset($item[$key])) {
-            if (\is_array($item)) {
-                $this->dataToString($item, $key);
-            }
+//            if (\is_array($item)) {
+//                $this->dataToString($item, $key);
+//            }
 
             return null;
         }
