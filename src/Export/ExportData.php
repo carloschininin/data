@@ -245,13 +245,17 @@ class ExportData extends Export
     {
         $key = $indexes[$count];
         if (!isset($item[$key])) {
+            if (\is_array($item)) {
+                $this->dataToString($item, $key);
+            }
+
             return null;
         }
 
         if (\is_array($item[$key])) {
-            if (!isset($indexes[$count + 1])) {
-                return $this->dataToString($item[$key]);
-            }
+//            if (!isset($indexes[$count + 1])) {
+//                return $this->dataToString($item[$key]);
+//            }
 
             return $this->item($item[$key], $indexes, $count + 1);
         }
@@ -259,10 +263,17 @@ class ExportData extends Export
         return $item[$key];
     }
 
-    public function dataToString($data): string
+    public function dataToString($values, string $key): string
     {
-        if ($data instanceof Collection) {
-            $data = $data->toArray();
+        if ($values instanceof Collection) {
+            $values = $values->toArray();
+        }
+
+        $data = [];
+        foreach ($values as $value) {
+            if (isset($value[$key])) {
+                $data[] = $value[$key];
+            }
         }
 
         return implode(', ', $data);
