@@ -244,7 +244,7 @@ class ExportData extends Export
     {
         $key = $indexes[$count];
         if (!isset($item[$key])) {
-            return $force ? $this->dataToString($item, $key) : null;
+            return $force ? $this->dataToString($item, $key, $indexes, $count) : null;
         }
 
         if (\is_array($item[$key])) {
@@ -254,7 +254,7 @@ class ExportData extends Export
         return $item[$key];
     }
 
-    public function dataToString($values, string $key): ?string
+    public function dataToString($values, string $key, array $indexes, int $count): ?string
     {
         if ($values instanceof Collection) {
             $values = $values->toArray();
@@ -267,7 +267,9 @@ class ExportData extends Export
         $data = [];
         foreach ($values as $value) {
             if (\is_array($value) && isset($value[$key])) {
-                $data[] = $value[$key];
+                $data[] = \is_array($value[$key])
+                    ? $this->item($value[$key], $indexes, $count + 1, true)
+                    : $value[$key];
             }
         }
 
