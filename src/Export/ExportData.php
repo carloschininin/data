@@ -12,6 +12,7 @@ namespace CarlosChininin\Data\Export;
 use CarlosChininin\Util\File\FileDownload;
 use CarlosChininin\Util\File\FileDto;
 use DateTime;
+use Doctrine\Common\Collections\Collection;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -249,13 +250,22 @@ class ExportData extends Export
 
         if (\is_array($item[$key])) {
             if (!isset($indexes[$count + 1])) {
-                return implode(', ', $item[$key]);
+                return $this->dataToString($item[$key]);
             }
 
             return $this->item($item[$key], $indexes, $count + 1);
         }
 
         return $item[$key];
+    }
+
+    public function dataToString($data): string
+    {
+        if ($data instanceof Collection) {
+            $data = $data->toArray();
+        }
+
+        return implode(', ', $data);
     }
 
     public function styleColDate(string $range): void
