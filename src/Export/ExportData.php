@@ -100,17 +100,16 @@ class ExportData extends Export
         return $this->spreadsheet->getActiveSheet();
     }
 
-    public function execute(): self
+    public function execute(bool $force = true): self
     {
         $this->applyHeaders();
-        $this->applyItems();
+        $this->applyItems($force);
 
         return $this;
     }
 
     public function applyHeaders(): self
     {
-        // Establecer las cabeceras
         $column = \ord($this->col) - 1;
         foreach ($this->headers as $key => $label) {
             ++$column;
@@ -121,7 +120,7 @@ class ExportData extends Export
         return $this;
     }
 
-    public function applyItems(): self
+    public function applyItems(bool $force): self
     {
         $i = $this->row + 1;
         foreach ($this->items as $item) {
@@ -131,7 +130,7 @@ class ExportData extends Export
                 $position = $this->columnLabel($column).$i;
                 $this->setCellValue(
                     $position,
-                    $this->itemByKey($item, $key),
+                    $this->itemByKey($item, $key, $force),
                     $this->typeHeader($label),
                     $this->formatHeader($label)
                 );
@@ -234,22 +233,22 @@ class ExportData extends Export
         return $startColumn.$this->row.':'.$endColumn.$this->row;
     }
 
-    private function itemByKey(array $item, string $key)
+    private function itemByKey(array $item, string $key, bool $force)
     {
         $indexes = explode('.', $key);
 
-        return $this->item($item, $indexes, 0);
+        return $this->item($item, $indexes, 0, $force);
     }
 
-    private function item($item, array $indexes, int $count)
+    private function item($item, array $indexes, int $count, bool $force)
     {
         $key = $indexes[$count];
         if (!isset($item[$key])) {
-            return $this->dataToString($item, $key);
+            return $force ? $this->dataToString($item, $key) : null;
         }
 
         if (\is_array($item[$key])) {
-            return $this->item($item[$key], $indexes, $count + 1);
+            return $this->item($item[$key], $indexes, $count + 1, $force);
         }
 
         return $item[$key];
