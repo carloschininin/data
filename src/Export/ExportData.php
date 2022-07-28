@@ -122,7 +122,6 @@ class ExportData extends Export
 
     public function applyItems(): self
     {
-        // Colocar los datos
         $i = $this->row + 1;
         foreach ($this->items as $item) {
             $column = \ord($this->col) - 1;
@@ -130,7 +129,7 @@ class ExportData extends Export
                 ++$column;
                 $position = $this->columnLabel($column).$i;
                 $this->setCellValue(
-                    $position, // \chr($column).$i,
+                    $position,
                     $this->itemByKey($item, $key),
                     $this->typeHeader($label),
                     $this->formatHeader($label)
@@ -249,6 +248,10 @@ class ExportData extends Export
         }
 
         if (\is_array($item[$key])) {
+            if (!isset($indexes[$count + 1])) {
+                return implode(', ', $item[$key]);
+            }
+
             return $this->item($item[$key], $indexes, $count + 1);
         }
 
