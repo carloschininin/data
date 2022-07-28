@@ -12,6 +12,7 @@ namespace CarlosChininin\Data\Export;
 use CarlosChininin\Util\File\FileDownload;
 use CarlosChininin\Util\File\FileDto;
 use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\Collection;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
@@ -267,7 +268,7 @@ class ExportData extends Export
 
         $data = [];
         foreach ($values as $value) {
-            if (isset($value[$key])) {
+            if (!$value instanceof DateTimeInterface && isset($value[$key])) {
                 $data[] = $value[$key];
             }
         }
