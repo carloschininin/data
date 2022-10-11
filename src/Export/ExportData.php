@@ -136,6 +136,7 @@ class ExportData extends Export
                 );
             }
             ++$i;
+            unset($item);
         }
 
         return $this;
