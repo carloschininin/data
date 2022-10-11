@@ -136,7 +136,6 @@ class ExportData extends Export
                 );
             }
             ++$i;
-            unset($item);
         }
 
         return $this;
@@ -245,7 +244,7 @@ class ExportData extends Export
     {
         $key = $indexes[$count];
 
-        if (!isset($item[$key])) {
+        if (!isset($item[$key]) && \count($indexes) > 1) {
             return $force ? $this->dataToString($item, $key, $indexes, $count) : null;
         }
 
@@ -273,7 +272,6 @@ class ExportData extends Export
                     ? $this->item($value[$key], $indexes, $count + 1, true)
                     : $value[$key];
             }
-            unset($value);
         }
 
         return implode(', ', $data);
