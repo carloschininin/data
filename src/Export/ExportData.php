@@ -234,16 +234,17 @@ class ExportData extends Export
         return $startColumn.$this->row.':'.$endColumn.$this->row;
     }
 
-    private function itemByKey(array $item, string $key, bool $force)
+    private function itemByKey(array $item, string $key, bool $force): mixed
     {
         $indexes = explode('.', $key);
 
         return $this->item($item, $indexes, 0, $force);
     }
 
-    private function item($item, array $indexes, int $count, bool $force)
+    private function item($item, array $indexes, int $count, bool $force): mixed
     {
         $key = $indexes[$count];
+
         if (!isset($item[$key])) {
             return $force ? $this->dataToString($item, $key, $indexes, $count) : null;
         }
@@ -272,6 +273,7 @@ class ExportData extends Export
                     ? $this->item($value[$key], $indexes, $count + 1, true)
                     : $value[$key];
             }
+            unset($value);
         }
 
         return implode(', ', $data);
