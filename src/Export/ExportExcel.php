@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace CarlosChininin\Data\Export;
 
+use DateTimeInterface;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -51,7 +52,7 @@ final class ExportExcel extends ExportData
             'fill' => [
                 'fillType' => Fill::FILL_SOLID,
                 'startColor' => [
-                    'rgb' => '215967', //'A9D08E',
+                    'rgb' => '215967', // 'A9D08E',
                 ],
             ],
         ];
@@ -87,27 +88,27 @@ final class ExportExcel extends ExportData
                 throw new ExportException('Escala de pagina');
             }
         }
-        if (isset($options['fitToPage'])) { //true false
+        if (isset($options['fitToPage'])) { // true false
             $setup->setFitToPage((bool) $options['fitToPage']);
         }
-        if (isset($options['fitToWidth'])) { //1 0
+        if (isset($options['fitToWidth'])) { // 1 0
             $setup->setFitToWidth((int) $options['fitToWidth']);
         }
         if (isset($options['fitToHeight'])) { // 1 0
             $setup->setFitToHeight((int) $options['fitToHeight']);
         }
         if (isset($options['orientation'])) {
-            $setup->setOrientation($options['orientation']); //default landscape portrait
+            $setup->setOrientation($options['orientation']); // default landscape portrait
         }
         if (isset($options['paperSize'])) {
-            switch (mb_strtoupper($options['paperSize'])) {
-                case 'A4': $paperSize = PageSetup::PAPERSIZE_A4; break;
-                case 'A3': $paperSize = PageSetup::PAPERSIZE_A3; break;
-                case 'A2': $paperSize = PageSetup::PAPERSIZE_A2_PAPER; break;
-                case 'A5': $paperSize = PageSetup::PAPERSIZE_A5; break;
-                default: $paperSize = PageSetup::PAPERSIZE_A4;
-            }
-            $setup->setPaperSize($paperSize); //default landscape portrait
+            $paperSize = match (mb_strtoupper($options['paperSize'])) {
+                'A3' => PageSetup::PAPERSIZE_A3,
+                'A2' => PageSetup::PAPERSIZE_A2_PAPER,
+                'A5' => PageSetup::PAPERSIZE_A5,
+                default => PageSetup::PAPERSIZE_A4,
+            };
+
+            $setup->setPaperSize($paperSize); // default landscape portrait
         }
 
         return $this;
@@ -171,5 +172,14 @@ final class ExportExcel extends ExportData
         }
 
         return $this;
+    }
+
+    public static function toExcelDate(?DateTimeInterface $dateTime): ?float
+    {
+        if (null === $dateTime) {
+            return null;
+        }
+
+        return 25569 + $dateTime->getTimestamp() / 86400;
     }
 }
