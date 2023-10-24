@@ -3,15 +3,13 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the PIDIA
+ * This file is part of the PIDIA.
  * (c) Carlos Chininin <cio@pidia.pe>
  */
 
 namespace CarlosChininin\Data\Export;
 
-use RuntimeException;
-
-final class ExportException extends RuntimeException
+class ExportException extends \RuntimeException
 {
     public function __construct($message = 'Export')
     {

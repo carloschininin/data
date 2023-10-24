@@ -39,7 +39,7 @@ abstract class Export
         return $this->options;
     }
 
-    abstract public function execute(): self;
+    abstract public function execute(): static;
 
     abstract public function file(string $fileName, array $params = []): FileDto;
 }

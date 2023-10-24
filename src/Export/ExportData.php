@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the PIDIA
+ * This file is part of the PIDIA.
  * (c) Carlos Chininin <cio@pidia.pe>
  */
 
@@ -11,7 +11,6 @@ namespace CarlosChininin\Data\Export;
 
 use CarlosChininin\Util\File\FileDownload;
 use CarlosChininin\Util\File\FileDto;
-use DateTime;
 use Doctrine\Common\Collections\Collection;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
@@ -36,10 +35,10 @@ class ExportData extends Export
     public const PDF_DOMPDF = 'DOMPDF';
     public const PDF_MPDF = 'MPDF';
     public const PDF_TCPDF = 'TCPDF';
-
-    private Spreadsheet $spreadsheet;
     protected string $col;
     protected int $row;
+
+    private Spreadsheet $spreadsheet;
     private string $type;
 
     public function __construct(array $items = [], array $headers = [], array $options = [], bool $removeWorksheet = false)
@@ -58,7 +57,7 @@ class ExportData extends Export
             $this->spreadsheet->removeSheetByIndex($index);
 
             return true;
-        } catch (Exception $e) {
+        } catch (Exception) {
         }
 
         return false;
@@ -70,7 +69,7 @@ class ExportData extends Export
             $this->spreadsheet->addSheet(new Worksheet($this->spreadsheet, $title));
 
             return $this->spreadsheet->setActiveSheetIndexByName($title);
-        } catch (Exception $e) {
+        } catch (Exception) {
         }
 
         return null;
@@ -80,13 +79,13 @@ class ExportData extends Export
     {
         try {
             return $this->spreadsheet->setActiveSheetIndex($index);
-        } catch (Exception $e) {
+        } catch (Exception) {
         }
 
         return null;
     }
 
-    public function sheet(?int $index = null): Worksheet
+    public function sheet(int $index = null): Worksheet
     {
         if (null === $index || $index < 0) {
             return $this->spreadsheet->getActiveSheet();
@@ -94,13 +93,13 @@ class ExportData extends Export
 
         try {
             return $this->spreadsheet->getSheet($index);
-        } catch (Exception $e) {
+        } catch (Exception) {
         }
 
         return $this->spreadsheet->getActiveSheet();
     }
 
-    public function execute(bool $force = true): self
+    public function execute(bool $force = true): static
     {
         $this->applyHeaders();
         $this->applyItems($force);
@@ -108,10 +107,10 @@ class ExportData extends Export
         return $this;
     }
 
-    public function applyHeaders(): self
+    public function applyHeaders(): static
     {
         $column = \ord($this->col) - 1;
-        foreach ($this->headers as $key => $label) {
+        foreach ($this->headers as $label) {
             ++$column;
             $position = $this->columnLabel($column).$this->row;
             $this->setCellValue($position, $this->labelHeader($label));
@@ -120,7 +119,7 @@ class ExportData extends Export
         return $this;
     }
 
-    public function applyItems(bool $force): self
+    public function applyItems(bool $force): static
     {
         $i = $this->row + 1;
         foreach ($this->items as $item) {
@@ -154,25 +153,7 @@ class ExportData extends Export
         return $this->columnLabel((int) $base).$this->columnLabel((int) $next);
     }
 
-    /** @param string|array $value */
-    protected function labelHeader($value): string
-    {
-        return $value['label'] ?? $value;
-    }
-
-    /** @param string|array $value */
-    protected function typeHeader($value): ?string
-    {
-        return $value['type'] ?? null;
-    }
-
-    /** @param string|array $value */
-    protected function formatHeader($value): ?string
-    {
-        return $value['format'] ?? null;
-    }
-
-    public function setCellValue(string $position, $value, string $dataType = null, ?string $dataFormat = null): self
+    public function setCellValue(string $position, $value, string $dataType = null, string $dataFormat = null): static
     {
         if (DataType::DATE === $dataType) {
             $value = Date::PHPToExcel($value);
@@ -192,16 +173,16 @@ class ExportData extends Export
         return $this;
     }
 
-    public function setCellFormat(string $position, string $dataFormat): self
+    public function setCellFormat(string $position, string $dataFormat): static
     {
         $this->sheet()->getStyle($position)->getNumberFormat()->setFormatCode($dataFormat);
 
         return $this;
     }
 
-    public function setCellValueAndMerge(string $range, $value): self
+    public function setCellValueAndMerge(string $range, $value): static
     {
-        list($ini, $fin) = explode(':', $range);
+        [$ini, $fin] = explode(':', $range);
 
         return $this->mergeCell($range)->setCellValue($ini, $value);
     }
@@ -213,11 +194,11 @@ class ExportData extends Export
         return $this;
     }
 
-    public function mergeCell(string $range): self
+    public function mergeCell(string $range): static
     {
         try {
             $this->sheet()->mergeCells($range);
-        } catch (Exception $e) {
+        } catch (Exception) {
             throw new ExportException('Fallo union de celdas');
         }
 
@@ -231,28 +212,6 @@ class ExportData extends Export
         $endColumn = $this->columnLabel($end);
 
         return $startColumn.$this->row.':'.$endColumn.$this->row;
-    }
-
-    private function itemByKey(array $item, string $key, bool $force): mixed
-    {
-        $indexes = explode('.', $key);
-
-        return $this->item($item, $indexes, 0, $force);
-    }
-
-    private function item($item, array $indexes, int $count, bool $force): mixed
-    {
-        $key = $indexes[$count];
-
-        if (!isset($item[$key]) && \count($indexes) > 1) {
-            return $force ? $this->dataToString($item, $key, $indexes, $count) : null;
-        }
-
-        if (\is_array($item[$key])) {
-            return $this->item($item[$key], $indexes, $count + 1, $force);
-        }
-
-        return $item[$key];
     }
 
     public function dataToString($values, string $key, array $indexes, int $count): ?string
@@ -304,6 +263,21 @@ class ExportData extends Export
         return (new FileDownload())->down($file);
     }
 
+    protected function labelHeader(string|array $value): string
+    {
+        return $value['label'] ?? $value;
+    }
+
+    protected function typeHeader(string|array $value): ?string
+    {
+        return $value['type'] ?? null;
+    }
+
+    protected function formatHeader(string|array $value): ?string
+    {
+        return $value['format'] ?? null;
+    }
+
     protected function encodeName(string $fileName, array $params): string
     {
         if (empty($params)) {
@@ -311,11 +285,11 @@ class ExportData extends Export
         }
 
         if (isset($params['date']) && true === $params['date']) {
-            return $fileName.'_'.(new DateTime())->format('dmY').$this->fileExtension();
+            return $fileName.'_'.(new \DateTime())->format('dmY').$this->fileExtension();
         }
 
         if (isset($params['datetime']) && true === $params['datetime']) {
-            return $fileName.'_'.(new DateTime())->format('dmY_his').$this->fileExtension();
+            return $fileName.'_'.(new \DateTime())->format('dmY_his').$this->fileExtension();
         }
 
         return $fileName.$this->fileExtension();
@@ -366,5 +340,27 @@ class ExportData extends Export
         }
 
         return new Xlsx($this->spreadsheet);
+    }
+
+    private function itemByKey(array $item, string $key, bool $force): mixed
+    {
+        $indexes = explode('.', $key);
+
+        return $this->item($item, $indexes, 0, $force);
+    }
+
+    private function item($item, array $indexes, int $count, bool $force): mixed
+    {
+        $key = $indexes[$count];
+
+        if (!isset($item[$key]) && \count($indexes) > 1) {
+            return $force ? $this->dataToString($item, $key, $indexes, $count) : null;
+        }
+
+        if (\is_array($item[$key])) {
+            return $this->item($item[$key], $indexes, $count + 1, $force);
+        }
+
+        return $item[$key];
     }
 }

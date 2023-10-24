@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the PIDIA
+ * This file is part of the PIDIA.
  * (c) Carlos Chininin <cio@pidia.pe>
  */
 
@@ -11,7 +11,7 @@ namespace CarlosChininin\Data\Export;
 
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
-final class AlignmentStyle
+class AlignmentStyle
 {
     public const HORIZONTAL_LEFT = Alignment::HORIZONTAL_LEFT;
     public const HORIZONTAL_RIGHT = Alignment::HORIZONTAL_RIGHT;

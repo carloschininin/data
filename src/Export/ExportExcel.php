@@ -3,20 +3,19 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the PIDIA
+ * This file is part of the PIDIA.
  * (c) Carlos Chininin <cio@pidia.pe>
  */
 
 namespace CarlosChininin\Data\Export;
 
-use DateTimeInterface;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 
-final class ExportExcel extends ExportData
+class ExportExcel extends ExportData
 {
     public function __construct(array $items = [], array $headers = [], array $options = [], bool $removeWorksheet = false)
     {
@@ -24,7 +23,7 @@ final class ExportExcel extends ExportData
         parent::__construct($items, $headers, $options, $removeWorksheet);
     }
 
-    public function headerStyle(array $style = [], ?string $range = null): self
+    public function headerStyle(array $style = [], string $range = null): static
     {
         $range = $range ?? $this->range();
 
@@ -64,7 +63,7 @@ final class ExportExcel extends ExportData
         return $this;
     }
 
-    public function columnAutoSize(string $start = null, string $end = null): self
+    public function columnAutoSize(string $start = null, string $end = null): static
     {
         $columnStart = $start ? \ord($start) : \ord($this->col);
         $columnEnd = $end ? \ord($end) : (\count($this->headers) + $columnStart + 1);
@@ -77,7 +76,7 @@ final class ExportExcel extends ExportData
         return $this;
     }
 
-    public function pageSetup(array $options = []): self
+    public function pageSetup(array $options = []): static
     {
         $setup = $this->sheet()->getPageSetup();
 
@@ -114,7 +113,7 @@ final class ExportExcel extends ExportData
         return $this;
     }
 
-    public function borderStyle(array $style = [], ?string $range = null): self
+    public function borderStyle(array $style = [], string $range = null): static
     {
         $range = $range ?? $this->range();
 
@@ -136,7 +135,7 @@ final class ExportExcel extends ExportData
         return $this;
     }
 
-    public function fontStyle(array $style = [], ?string $range = null): self
+    public function fontStyle(array $style = [], string $range = null): static
     {
         $range = $range ?? $this->range();
 
@@ -156,14 +155,18 @@ final class ExportExcel extends ExportData
         return $this;
     }
 
-    public function style(array $style, string $range): self
+    public function style(array $style, string $range): static
     {
-        $this->sheet()->getStyle($range)->applyFromArray($style);
+        try {
+            $this->sheet()->getStyle($range)->applyFromArray($style);
+        } catch (Exception $exception) {
+            throw new ExportException('Failed style '.$exception->getMessage());
+        }
 
         return $this;
     }
 
-    public function setCellValueAndMerge(string $range, $value, array $style = []): self
+    public function setCellValueAndMerge(string $range, $value, array $style = []): static
     {
         parent::setCellValueAndMerge($range, $value);
 
@@ -174,7 +177,7 @@ final class ExportExcel extends ExportData
         return $this;
     }
 
-    public static function toExcelDate(?DateTimeInterface $dateTime): ?float
+    public static function toExcelDate(?\DateTimeInterface $dateTime): ?float
     {
         if (null === $dateTime) {
             return null;
