@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the PIDIA
+ * This file is part of the PIDIA.
  * (c) Carlos Chininin <cio@pidia.pe>
  */
 
@@ -13,15 +13,11 @@ use CarlosChininin\Util\File\FileDto;
 
 abstract class Export
 {
-    protected array $items;
-    protected array $headers;
-    protected array $options;
-
-    public function __construct(array $items, array $headers = [], array $options = [])
-    {
-        $this->items = $items;
-        $this->headers = $headers;
-        $this->options = $options;
+    public function __construct(
+        protected array $items,
+        protected array $headers = [],
+        protected array $options = [],
+    ) {
     }
 
     public function items(): array

@@ -110,7 +110,7 @@ class ExportData extends Export
     public function applyHeaders(): static
     {
         $column = \ord($this->col) - 1;
-        foreach ($this->headers as $label) {
+        foreach ($this->headers as &$label) {
             ++$column;
             $position = $this->columnLabel($column).$this->row;
             $this->setCellValue($position, $this->labelHeader($label));
@@ -122,9 +122,9 @@ class ExportData extends Export
     public function applyItems(bool $force): static
     {
         $i = $this->row + 1;
-        foreach ($this->items as $item) {
+        foreach ($this->items as &$item) {
             $column = \ord($this->col) - 1;
-            foreach ($this->headers as $key => $label) {
+            foreach ($this->headers as $key => &$label) {
                 ++$column;
                 $position = $this->columnLabel($column).$i;
                 $this->setCellValue(
@@ -342,14 +342,14 @@ class ExportData extends Export
         return new Xlsx($this->spreadsheet);
     }
 
-    private function itemByKey(array $item, string $key, bool $force): mixed
+    protected function itemByKey(array $item, string $key, bool $force): mixed
     {
         $indexes = explode('.', $key);
 
         return $this->item($item, $indexes, 0, $force);
     }
 
-    private function item($item, array $indexes, int $count, bool $force): mixed
+    protected function item($item, array $indexes, int $count, bool $force): mixed
     {
         $key = $indexes[$count];
 
