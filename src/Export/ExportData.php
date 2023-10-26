@@ -187,7 +187,7 @@ class ExportData extends Export
         return $this->mergeCell($range)->setCellValue($ini, $value);
     }
 
-    public function setCellFromArray(string $startCell, array $items, $nullValue = null): self
+    public function setCellFromArray(string $startCell, array $items, $nullValue = null): static
     {
         $this->sheet()->fromArray($items, $nullValue, $startCell);
 
