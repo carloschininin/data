@@ -11,7 +11,6 @@
   ],
   "require": {
     "php": "^8.1",
-    "ext-xlswriter": "*",
     "carloschininin/util": "dev-master",
     "phpoffice/phpspreadsheet": "^1.15",
     "symfony/http-foundation": "^6.0"
@@ -20,6 +19,7 @@
     "friendsofphp/php-cs-fixer": "^v3.1"
   },
   "suggest": {
+    "ext-xlswriter": "Extension required xls fast",
     "mpdf/mpdf": "Option for rendering PDF with PDF Writer",
     "dompdf/dompdf": "Option for rendering PDF with PDF Writer (doesn't yet support PHP8)",
     "tecnickcom/tcpdf": "Option for rendering PDF with PDF Writer (doesn't yet support PHP8)",
