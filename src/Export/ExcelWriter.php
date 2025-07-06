@@ -16,7 +16,7 @@ use Vtiful\Kernel\Excel;
 use Vtiful\Kernel\Format;
 
 /**
- * Class experimental export data in excel format
+ * Class experimental export data in excel format.
  */
 class ExcelWriter extends Export
 {
@@ -56,7 +56,7 @@ class ExcelWriter extends Export
         return $this;
     }
 
-    public function setCellValue(int $row, int $colum, mixed $value, string $dataFormat = null, string $dataType = DataType::STRING): static
+    public function setCellValue(int $row, int $colum, mixed $value, ?string $dataFormat = null, string $dataType = DataType::STRING): static
     {
         if (null === $value) {
             return $this;

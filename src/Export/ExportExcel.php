@@ -23,7 +23,7 @@ class ExportExcel extends ExportData
         parent::__construct($items, $headers, $options, $removeWorksheet);
     }
 
-    public function headerStyle(array $style = [], string $range = null): static
+    public function headerStyle(array $style = [], ?string $range = null): static
     {
         $range = $range ?? $this->range();
 
@@ -63,7 +63,7 @@ class ExportExcel extends ExportData
         return $this;
     }
 
-    public function columnAutoSize(string $start = null, string $end = null): static
+    public function columnAutoSize(?string $start = null, ?string $end = null): static
     {
         $columnStart = $start ? \ord($start) : \ord($this->col);
         $columnEnd = $end ? \ord($end) : (\count($this->headers) + $columnStart + 1);
@@ -113,7 +113,7 @@ class ExportExcel extends ExportData
         return $this;
     }
 
-    public function borderStyle(array $style = [], string $range = null): static
+    public function borderStyle(array $style = [], ?string $range = null): static
     {
         $range = $range ?? $this->range();
 
@@ -135,7 +135,7 @@ class ExportExcel extends ExportData
         return $this;
     }
 
-    public function fontStyle(array $style = [], string $range = null): static
+    public function fontStyle(array $style = [], ?string $range = null): static
     {
         $range = $range ?? $this->range();
 

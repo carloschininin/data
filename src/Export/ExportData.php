@@ -85,7 +85,7 @@ class ExportData extends Export
         return null;
     }
 
-    public function sheet(int $index = null): Worksheet
+    public function sheet(?int $index = null): Worksheet
     {
         if (null === $index || $index < 0) {
             return $this->spreadsheet->getActiveSheet();
@@ -153,7 +153,7 @@ class ExportData extends Export
         return $this->columnLabel((int) $base).$this->columnLabel((int) $next);
     }
 
-    public function setCellValue(string $position, $value, string $dataType = null, string $dataFormat = null): static
+    public function setCellValue(string $position, $value, ?string $dataType = null, ?string $dataFormat = null): static
     {
         if (DataType::DATE === $dataType) {
             $value = Date::PHPToExcel($value);
@@ -312,7 +312,7 @@ class ExportData extends Export
         return '.'.mb_strtolower($this->type);
     }
 
-    protected function fileWriter(string $type = null): BaseWriter
+    protected function fileWriter(?string $type = null): BaseWriter
     {
         $type = $type ?? $this->type;
         if (self::EXCEL === $type) {
