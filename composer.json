@@ -3,6 +3,8 @@
   "description": "Utilities for data",
   "type": "library",
   "license": "proprietary",
+  "minimum-stability": "stable",
+  "prefer-stable": true,
   "authors": [
     {
       "name": "Carlos Chininin",
@@ -16,7 +18,8 @@
     "symfony/http-foundation": "^6.0|^7.0"
   },
   "require-dev": {
-    "laravel/pint": "^1.22"
+    "laravel/pint": "^1.22",
+    "phpunit/phpunit": "^11.0|^12.0"
   },
   "suggest": {
     "ext-xlswriter": "Extension required xls fast",
@@ -38,7 +41,5 @@
     "psr-4": {
       "CarlosChininin\\Data\\Tests\\": "tests/"
     }
-  },
-  "minimum-stability": "stable",
-  "prefer-stable": true
+  }
 }
