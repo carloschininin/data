@@ -12,10 +12,10 @@
     }
   ],
   "require": {
-    "php": "^8.3",
-    "carloschininin/util": "^0.1",
-    "phpoffice/phpspreadsheet": "^3.0|^4.0",
-    "symfony/http-foundation": "^6.0|^7.0"
+    "php": "^8.4",
+    "carloschininin/util": "^0.2",
+    "phpoffice/phpspreadsheet": "^4.0|^5.0",
+    "symfony/http-foundation": "^6.0|^7.0|^8.0"
   },
   "require-dev": {
     "laravel/pint": "^1.22",
